@@ -5,7 +5,7 @@ import { fetchMovies } from '../../services/movieService';
 import { useState } from 'react';
 import type { Movie } from '../../types/movie';
 import toast, { Toaster } from 'react-hot-toast';
-import MovieGrid from '../MovieGrid/NovieGrid';
+import MovieGrid from '../MovieGrid/MovieGrid';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import MovieModal from '../MovieModal/MovieModal';
@@ -13,7 +13,7 @@ import MovieModal from '../MovieModal/MovieModal';
 const enterSearchToast = () => toast.error('No movies found for your request.');
 
 function App() {
-  const [movie, setMovie] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -22,7 +22,7 @@ function App() {
       setIsLoading(true);
       setIsError(false);
       const data = await fetchMovies(topic);
-      setMovie(data);
+      setMovies(data);
       if (data.length === 0) {
         enterSearchToast();
       }
@@ -49,7 +49,7 @@ function App() {
       <SearchBar onSubmit={handleSearch} />
       {isLoading && (<Loader />)}
       {isError && (<ErrorMessage />)}
-      {movie.length > 0 && (<MovieGrid movies={movie} onSelect={openMovieModal} />)}
+      {movies.length > 0 && isError === false && isLoading === false && (<MovieGrid movies={movies} onSelect={openMovieModal} />)}
       {isModalOpen && selectedMovie && (<MovieModal onClose={closeMovieModal} movie={selectedMovie} />)}
       <Toaster />
     </>
